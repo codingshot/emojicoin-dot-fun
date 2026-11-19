@@ -1,8 +1,14 @@
 ---
 env:
   TS_DIR: 'src/typescript'
+# Cancel superseded PR checks; keep every non-PR invocation independent.
+concurrency:
+  group: ts-run-fmt.yaml-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   ts-run-fmt:
+    timeout-minutes: 60
     runs-on: 'ubuntu-latest'
     steps:
     - uses: 'actions/checkout@v4'

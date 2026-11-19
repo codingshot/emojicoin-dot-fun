@@ -1,6 +1,12 @@
 ---
+# Cancel superseded PR checks; keep every non-PR invocation independent.
+concurrency:
+  group: verify-doc-site-build.yaml-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build-docs:
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: 'doc/doc-site'

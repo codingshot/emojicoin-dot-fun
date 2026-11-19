@@ -10,8 +10,14 @@ name: 'Production Branch Protection'
     - 'synchronize'
     - 'edited'
 
+# Cancel superseded PR checks; keep every non-PR invocation independent.
+concurrency:
+  group: production-branch-protection.yaml-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   production-branch-protection:
+    timeout-minutes: 60
     runs-on: 'ubuntu-latest'
     steps:
     - name: 'Check if the PR is targeting the production branch'
