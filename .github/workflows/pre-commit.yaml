@@ -7,8 +7,14 @@
 env:
   POETRY_VERSION: '1.8.2'
   PYTHON_VERSION: '3.10'
+# Cancel superseded PR checks; keep every non-PR invocation independent.
+concurrency:
+  group: pre-commit.yaml-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   pre-commit:
+    timeout-minutes: 60
     runs-on: 'ubuntu-latest'
     steps:
     - uses: 'actions/checkout@v4'
